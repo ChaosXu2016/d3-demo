@@ -1,0 +1,38 @@
+.x-axis .domain {
+  stroke: none;
+}
+.y-axis .domain {
+  stroke: none;
+}
+.y-axis .tick line{  
+  stroke-dasharray: 6;
+  stroke-dashoffset: 6;
+  stroke: #b4b4b4;
+}
+.y-axis .tick:last-of-type line{
+  stroke-dasharray: 0;
+  stroke: #333;
+}
+.data-line {
+  stroke: rgb(243, 83, 0);
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.data-area {
+  stroke: none;
+  fill: rgba(243, 83, 0, .2);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.data-dot-item {
+  stroke: rgb(243, 83, 0);
+  fill: rgba(255, 255, 255);
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+
+text {
+  user-select: none;
+}

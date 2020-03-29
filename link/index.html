@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .x-axis path {
+      stroke: none;
+    }
+    .y-axis path {
+      stroke: none;
+    }
+    .tick line {
+      stroke: rgba(0, 0, 0, .1)
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="../d3/d3.js"></script>
+  <script type="text/javascript">
+  const data = {
+    "name": "Eve",
+    "children": [
+      {
+        "name": "Cain"
+      },
+      {
+        "name": "Seth",
+        "children": [
+          {
+            "name": "Enos",
+            "children": [
+              {
+                "name": "Enos"
+              },
+              {
+                "name": "Noam"
+              }
+            ]
+          },
+          {
+            "name": "Enos",
+            "children": [
+              {
+                "name": "Enos"
+              },
+              {
+                "name": "Noam"
+              }
+            ]
+          },
+          {
+            "name": "Noam",
+            "children": [
+              {
+                "name": "Enos"
+              },
+              {
+                "name": "Noam"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Abel",
+        "children": [
+          {
+            "name": "Enos"
+          },
+          {
+            "name": "Noam"
+          }
+        ]
+      },
+      {
+        "name": "Awan",
+        "children": [
+          {
+            "name": "Enoch"
+          }
+        ]
+      },
+      {
+        "name": "Azura"
+      }
+    ]
+  }
+
+  const width = 500
+  const height = 400
+
+  const padding = 50
+
+  const svgWidth = width + padding * 2
+  const svgHeight = height + padding * 2
+
+  const hierarchyData = d3.hierarchy(data)
+
+  const tree = data => {
+    const root = d3.hierarchy(data);
+    root.dx = height / 2;
+    root.dy = 10;
+    return d3.tree().size([width, height])(root);
+  }
+  const svg = d3.create('svg')
+    .attr('width', svgWidth)
+    .attr('height', svgHeight)
+
+  const linebac = () => {
+    const scaleX = d3.scaleLinear()
+    .range([0, width])
+    .domain([0, width])
+    const scaleY = d3.scaleLinear()
+    .range([0, height])
+    .domain([0, height])
+
+    let axisX = d3.axisTop(scaleX).tickSize(height)
+    let axisY = d3.axisLeft(scaleY).tickSize(width)
+
+    svg.append("g")
+    .call(axisX)
+    .attr('class', 'x-axis')
+    .attr('transform', `translate(${padding}, ${padding + height})`)
+
+    svg.append("g")
+    .call(axisY)
+    .attr('class', 'y-axis')
+    .attr('transform', `translate(${padding + width}, ${padding})`)
+  }
+
+  const chart = () => {
+    const root = tree(data)
+
+    const g = svg.append("g")
+    .attr("font-family", "sans-serif")
+    .attr("font-size", 10)
+    .attr("transform", d => `translate(${padding},${padding})`);
+
+    const link = g.append("g")
+    .attr("fill", "none")
+    .attr("stroke", "#555")
+    .attr("stroke-opacity", 0.4)
+    .attr("stroke-width", 1.5)
+    .selectAll("path")
+    .data(root.links())
+    .join("path")
+    .attr("d", d3.linkVertical()
+    .x(d => d.x)
+    .y(d => d.y))
+
+    const node = g.append("g")
+    .attr("stroke-linejoin", "round")
+    .attr("stroke-width", 3)
+    .selectAll("g")
+    .data(root.descendants())
+    .join("g")
+    .attr("transform", d => `translate(${d.x},${d.y})`);
+
+    node.append("circle")
+    .attr("fill", d => d.children ? "#555" : "#999")
+    .attr("r", 2.5);
+
+    node.append("text")
+    .attr("dy", "0.31em")
+    .attr("x", d => d.children ? -6 : 6)
+    .attr("text-anchor", d => d.children ? "end" : "start")
+    .text(d => d.data.name)
+    .clone(true).lower()
+    .attr("stroke", "white")
+  }
+
+  window.onload = function() {
+    linebac()
+    chart()
+    document.getElementById('root')
+    .appendChild(svg.node())
+  }
+
+  </script>
+</body>
+</html>

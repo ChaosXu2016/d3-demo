@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="../d3/d3.js"></script>
+  <script>
+    var data = [10, 10, 10];
+    var arcs = d3.pie()(data);
+
+    const colors = [
+      '#FAD344',
+      '#FFB034',
+      '#FA7744',
+      '#E44848',
+      '#C63030',
+      '#E46094',
+      '#AFA9FF',
+      '#9760E4',
+      '#5255CF',
+      '#425188',
+      '#3476EA',
+      '#3FA0FF',
+      '#80CEF6',
+      '#3ECBCB',
+      '#8ADB72',
+      '#30BB6C',
+      '#58BC4C',
+      '#1D9D54',
+      '#CFBD5C',
+      '#9C8248'
+    ]
+
+    const svg = d3.create('svg')
+    .attr('width', 500)
+    .attr('height', 309)
+    
+    const arc = (d) => d3.arc()
+    .innerRadius(0)
+    .outerRadius(100)
+    .startAngle(d.startAngle)
+    .endAngle(d.endAngle)
+
+    const unitDuration = 500 / Math.PI
+    arcs = arcs.map(item => ({
+      ...item,
+      duration: Math.abs(item.startAngle - item.endAngle) * unitDuration,
+      delay: item.startAngle * unitDuration
+    }))
+    const g = svg.append('g')
+    .attr('id', 'pie-chart')
+    .attr('transform', 'translate(250, 155)')
+    .selectAll('path')
+    .data(arcs)
+    .enter()
+    .append('path')
+    .attr('stroke', 'none')
+    .attr('fill', d => colors[d.index % colors.length])
+    .transition()
+    .duration(d => d.duration)
+    .delay(d => d.delay)
+    .ease(d3.easeLinear)
+    .attrTween('d', d => {
+      const interpolateD = d3.interpolate(d.startAngle, d.endAngle)
+      return t => {
+        d.endAngle = interpolateD(t)
+        return arc(d)()
+      }
+    })
+
+    window.onload = function() {
+      document.getElementById('root')
+      .appendChild(svg.node())
+    }
+  </script>
+</body>
+</html>

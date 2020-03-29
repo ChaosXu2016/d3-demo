@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+  <div id="chart" width="1000" height="1000">
+
+  </div>
+  <script src="../d3/d3.js"></script>
+  <script src="./index.js"></script>
+  <script type="text/javascript">
+    const rangeX = [0, 19]
+    const getData = function() {
+      const [min, max] = rangeX
+      const data = []
+      for(let i = min; i < max + 1; i++) {
+        data.push({
+          y: 400 * Math.random() + 200,
+          x: i
+        })
+      }
+      return Promise.resolve(data)
+    }
+
+    window.onload = () => {
+      const chartF = lineChart({
+        width: 500,
+        height: 309,
+        root: document.getElementById('chart'),
+        padding: 50,
+        rangeX: rangeX,
+        rangeY: [650, 0],
+        duration: 1000,
+      })
+      getData().then(data => {
+        chartF(data)
+      })
+    }
+  </script>
+</body>
+</html>
